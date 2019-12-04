@@ -2,6 +2,10 @@
 // Created by CJ Hillbrand on 2019-11-17.
 //
 
+// The camera player extends the player class. It creates a hand processing object
+// to calculate the position of the hand in each frame, but calculates the deltas itself.
+// The deltas are what it will return to be its final movement
+
 #ifndef CAMERAPLAYER_H
 #define CAMERAPLAYER_H
 
@@ -12,15 +16,20 @@ using namespace std;
 
 class CameraPlayer : public Player {
 public:
+    // Constructor to read in live video. Defaults to writing to video 4
     CameraPlayer() : Player(), hp(HandProcessor(4)) {
         type = 3;
-        prevCoord = { .x = -1, .y = -1};
+        prevCoord = {-1, -1};
 
     };
+    // Constructor to read in from a premade file.
     CameraPlayer(const string file, const int videoNum) : Player(), hp(HandProcessor(file, videoNum)) {
         type = 3;
-        prevCoord = { .x = -1, .y = -1};
+        prevCoord = {-1, -1};
     }
+
+    // Returns the delta between the previous position and the next position.
+    // If the video is done it will return a special move signifying the end of the video.
     Movement getMove(char move) {
         //cout << "Returning new CameraMove" << endl;
         moves++;
@@ -40,17 +49,19 @@ public:
         if (deltaY > 50 || deltaY < -50) {
             deltaY = deltaY / 10;
         }
-        nextMove = { .x = nextMove.x + deltaX, .y = nextMove.y + deltaY};
+        nextMove = {nextMove.x + deltaX, nextMove.y + deltaY};
 
         prevCoord.x = nextCoordinates.x;
         prevCoord.y = nextCoordinates.y;
         if (moves % 2 == 0) {
-            Movement temp = { .x = nextMove.x * 2, .y = nextMove.y * 2 };
-            nextMove = { .x = 0, .y = 0 };
+            Movement temp = {nextMove.x * 2, nextMove.y * 2};
+            nextMove = {0, 0};
             return temp;
         } else
             return NO_CHANGE;
     }
+
+    // Methods inherited from Player
     using Player::setX;
     using Player::setY;
     using Player::getX;
@@ -58,13 +69,13 @@ public:
     using Player::setFrame;
 
 private:
-    HandProcessor hp;
-    Movement prevCoord;
-    Movement nextMove;
-    int moves;
-    const int EXIT_COND_INT = -2;
-    const Movement NO_CHANGE = {.x = 0, .y = 0};
-    const Movement EXIT_COND = {.x = -960, .y = -960};
+    HandProcessor hp;   // Hand proccessor
+    Movement prevCoord; // Previous hand position
+    Movement nextMove;  // Next hand position 
+    int moves;          // Number of moves made
+    const int EXIT_COND_INT = -2;   // Special exit condition
+    const Movement NO_CHANGE = {0, 0};  // Constant for no change
+    const Movement EXIT_COND = {-960, -960};    // Constant for exit condition
 
 
 };

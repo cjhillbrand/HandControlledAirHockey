@@ -2,6 +2,8 @@
 // Created by CJ Hillbrand on 2019-11-18.
 //
 
+// This player extends the abstract player class.
+
 #ifndef KEYBOARDPLAYER_H
 #define KEYBOARDPLAYER_H
 #include <iostream>
@@ -14,6 +16,8 @@ using namespace cv;
 
 class KeyboardPlayer : public Player {
 public:
+
+    // Constructors
     KeyboardPlayer() : Player() {
         type = 1;
     };
@@ -24,8 +28,11 @@ public:
     };
     KeyboardPlayer(int x, int y) : Player(x, y) {}
 
+    // Given a char. Returns the move that it will make.
+    // If this player is on the left side of the field, it will only handle 'wasd' keys
+    // If this player in on the right side of the field it will only handle 'ijkl; keys
     Movement getMove(char move) {
-        Movement m = { .x = 0, .y = 0};
+        Movement m = {0, 0};
         moves++;
         if (moves == 0 || move == -1) {
             velocityY = 0;
@@ -67,6 +74,8 @@ public:
         velocityY = m.y;
         return m;
     }
+
+    // Methods inherited by the Player class.
     using Player::setX;
     using Player::setY;
     using Player::getX;
@@ -77,9 +86,9 @@ public:
     using Player::setFrame;
 
 private:
-    int playerNum;
-    const int delta = 15;
-    int moves;
+    int playerNum;      // Denotes if we are on the left or right side
+    const int delta = 15;   // The rate of change for one key press
+    int moves;          // How many moves have been made
 
 };
 
